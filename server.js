@@ -66,7 +66,7 @@ app.post('/users', (req, res) => {
     const newUser = req.body
     const {name, email} = req.body
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if(!username || !email) {
+    if(!name || !email) {
      return res.status(400).json({error: 'Datos incompletos'})
     }
     if(username.length <= 5) {
