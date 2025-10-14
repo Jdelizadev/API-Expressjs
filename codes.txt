@@ -1,0 +1,35 @@
+
+¡Claro! Los códigos de estado HTTP son fundamentales para que tu API se comunique correctamente con el cliente. A continuación, te presento los más comunes y útiles para cualquier proyecto, organizados en un formato tipo acordeón para que puedas consultarlos fácilmente.
+
+Códigos de éxito (2xx)
+Indican que la solicitud del cliente fue recibida, entendida y aceptada con éxito.
+
+200 OK: El código más común. Se usa para una respuesta exitosa en una solicitud GET, PUT, o para operaciones no específicas como un inicio de sesión.
+
+201 Created: Se utiliza cuando una solicitud (generalmente un POST) resulta en la creación de un nuevo recurso en el servidor. La respuesta debe incluir la URL del nuevo recurso en el encabezado Location.
+
+204 No Content: La solicitud se procesó con éxito, pero la respuesta no contiene ningún cuerpo. Es ideal para solicitudes DELETE o PUT que no necesitan devolver información.
+
+202 Accepted: La solicitud ha sido aceptada para su procesamiento, pero este no se ha completado. Es útil para operaciones de larga duración que se ejecutan en segundo plano.
+
+Códigos de error del cliente (4xx)
+Indican que hay un problema con la solicitud del cliente. El servidor no puede procesarla por algún motivo.
+
+400 Bad Request: La solicitud no se pudo entender debido a una sintaxis incorrecta o a parámetros malformados.
+
+401 Unauthorized: El cliente no tiene credenciales de autenticación válidas para el recurso solicitado. Es decir, el usuario no ha iniciado sesión.
+
+403 Forbidden: El cliente está autenticado, pero no tiene permiso para acceder a ese recurso específico. A diferencia del 401, aquí el servidor conoce la identidad del usuario, pero le prohíbe el acceso.
+
+404 Not Found: El servidor no pudo encontrar el recurso solicitado. Este es uno de los códigos de error más conocidos y se utiliza cuando la URL no corresponde a ningún recurso existente.
+
+405 Method Not Allowed: El método HTTP utilizado en la solicitud (GET, POST, PUT, DELETE) no es compatible con el recurso al que se intenta acceder.
+
+409 Conflict: La solicitud no se pudo completar debido a un conflicto con el estado actual del recurso, como por ejemplo, un intento de crear un recurso que ya existe.
+
+Códigos de error del servidor (5xx)
+Indican que el servidor falló al procesar una solicitud aparentemente válida.
+
+500 Internal Server Error: Un error genérico. Se usa cuando el servidor encuentra una condición inesperada que le impide procesar la solicitud. Es un comodín para errores de servidor no especificados.
+
+503 Service Unavailable: El servidor no está listo para manejar la solicitud. Es común cuando el servidor está sobrecargado o en mantenimiento.
