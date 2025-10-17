@@ -1,13 +1,17 @@
-
 [
   {
     "id": 1,
-    "name": "Jaime de lizaola",
-    "email": "jaimedelizaola@gmail.com"
+    "username": "Jorge arturo",
+    "email": "jdeliza@hotmail.com"
   },
   {
     "id": 2,
-    "name": "Jorge arturo",
+    "username": "Jorge arturo",
+    "email": "jdeliza@hotmail.com"
+  },
+  {
+    "id": 3,
+    "username": "Jorge arturo",
     "email": "jdeliza@hotmail.com"
   }
 ]

@@ -1,0 +1,7 @@
+
+node prisma/seed.js para crear los usuarios con nuestro archivo semilla
+para ver las bases de datos que tienes creadas es con el comando psql -l
+Para ver las tablas es \dt ya estando conectado a postgres
+SELECT * FROM "NombreDeTuTabla";
+npx prisma migrate dev --name 'update'
+npx prisma generate
