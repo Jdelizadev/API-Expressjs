@@ -5,3 +5,4 @@ Para ver las tablas es \dt ya estando conectado a postgres
 SELECT * FROM "NombreDeTuTabla";
 npx prisma migrate dev --name 'update'
 npx prisma generate
+npx prisma studio

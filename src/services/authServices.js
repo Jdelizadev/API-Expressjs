@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 
-const registerUser = async (email, password, name) => {
+const registerUser = async (name, email, password) => {
         const hashedPassword = await bcrypt.hash(password, 10)
         const newUser = await prisma.user.create({
             data: { email, password: hashedPassword, name, role : 'USER'}
