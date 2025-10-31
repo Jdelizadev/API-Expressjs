@@ -6,12 +6,16 @@ const adminRouter = require('./admin')
 const getRouter = require('./get')
 const reservations = require('./reservations')
 const appointmens = require('./appointmens')
+const availabilityRouter = require('./availability')
+
 
 router.use('/auth', authRouter)
 router.use('/admin', adminRouter)
 router.use('/reservations', reservations)
 router.use('/get', getRouter)
 router.use('/users', appointmens)
+
+router.use('/availability', availabilityRouter)
 router.get('/error', (req, res, next) => {
     next(new Error('Error intencional'))
 })
