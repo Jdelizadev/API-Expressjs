@@ -16,6 +16,7 @@ router.use('/get', getRouter)
 router.use('/users', appointmens)
 
 router.use('/availability', availabilityRouter)
+
 router.get('/error', (req, res, next) => {
     next(new Error('Error intencional'))
 })

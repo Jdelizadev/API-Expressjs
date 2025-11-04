@@ -1,79 +1,85 @@
-// services/availabilityServices.js
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// --- CONFIGURACIÓN DE DISPONIBILIDAD ---
-const START_HOUR = 8; // 8 AM
-const END_HOUR = 17; // 5 PM (17:00)
-const APPOINTMENT_DURATION_MINUTES = 60; // 60 minutos por cita
-// ----------------------------------------
+const START_HOUR = 8;
+const END_HOUR = 17;
+const APPOINTMENT_DURATION_MINUTES = 60;
 
-/**
- * Calcula la disponibilidad de citas para la próxima semana (Lunes a Sábado).
- * @param {number} userId - ID del usuario (opcional, si se necesita disponibilidad específica)
- * @returns {Array<Object>} Lista de días con el número de horas disponibles.
- */
+
+const generatePossibleBlocks = (date) => {
+    const blocks = [];
+    let currentTime = new Date(date);
+    currentTime.setHours(START_HOUR, 0, 0, 0); // Establecer la hora de inicio (8 AM)
+
+    const endTime = new Date(date);
+    endTime.setHours(END_HOUR, 0, 0, 0); // Establecer la hora de fin (5 PM)
+
+    while (currentTime.getTime() < endTime.getTime()) {
+        const blockStart = new Date(currentTime);
+        const blockEnd = new Date(blockStart.getTime() + APPOINTMENT_DURATION_MINUTES * 60000); // Sumar 60 min
+
+        // Asegurarse de que el bloque no se extienda más allá de la hora de fin
+        if (blockEnd.getTime() <= endTime.getTime()) {
+            blocks.push({
+                startTime: blockStart.toISOString(),
+                endTime: blockEnd.toISOString(),
+            });
+        }
+        
+        // Mover al siguiente bloque
+        currentTime.setTime(blockEnd.getTime());
+    }
+
+    return blocks;
+};
+
 const getWeeklyAvailability = async () => {
-    
-    // 1. Definir el rango de la semana (próximo Lunes a próximo Sábado)
     const now = new Date();
-    // Encontrar el próximo Lunes
     const nextMonday = new Date(now);
     nextMonday.setDate(now.getDate() + (1 + 7 - now.getDay()) % 7);
     nextMonday.setHours(0, 0, 0, 0);
 
-    // Encontrar el próximo Domingo (para incluir la disponibilidad hasta el Sábado)
     const nextSunday = new Date(nextMonday);
-    nextSunday.setDate(nextSunday.getDate() + 6); // Cubre Lunes a Sábado
+    nextSunday.setDate(nextSunday.getDate() + 6); 
 
-    // 2. Obtener TODAS las citas existentes en el rango
     const existingAppointments = await prisma.appointment.findMany({
         where: {
             date: {
-                gte: nextMonday.toISOString(), // Citas desde el Lunes
-                lt: nextSunday.toISOString(), // Citas hasta el Sábado
+                gte: nextMonday.toISOString(),
+                lt: nextSunday.toISOString(),
             },
         },
         select: {
-            date: true,
-            timeBlock: {
-                select: {
-                    startTime: true,
-                    endTime: true,
-                }
-            }
+            timeBlock: { select: { startTime: true } } 
         }
     });
 
-    // 3. Generar la disponibilidad diaria y compararla con las citas
     const weeklyAvailability = [];
 
     for (let i = 0; i < 6; i++) { // Iterar de Lunes (i=0) a Sábado (i=5)
         const date = new Date(nextMonday);
         date.setDate(nextMonday.getDate() + i);
-
-        // Convertir la fecha a formato 'YYYY-MM-DD' para comparación
         const dateString = date.toISOString().split('T')[0];
         
-        // Calcular el número total de bloques posibles en el día (de 8 AM a 5 PM)
-        const totalPossibleBlocks = (END_HOUR - START_HOUR) * (60 / APPOINTMENT_DURATION_MINUTES); // (17 - 8) * (60/60) = 9
+        const allPossibleBlocks = generatePossibleBlocks(date);
 
-        // Filtrar las citas que corresponden a este día
-        const appointmentsOnDay = existingAppointments.filter(app => {
-            return new Date(app.date).toISOString().split('T')[0] === dateString;
+        const occupiedStartTimes = new Set(
+            existingAppointments
+                .filter(app => new Date(app.timeBlock.startTime).toISOString().split('T')[0] === dateString)
+                .map(app => app.timeBlock.startTime) // Guarda el ISOString del startTime
+        );
+
+        const availableBlocks = allPossibleBlocks.filter(block => {
+            return !occupiedStartTimes.has(block.startTime);
         });
 
-        // Contar el número de bloques ocupados
-        const occupiedBlocks = appointmentsOnDay.length;
-
-        // Calcular la disponibilidad
-        const hoursAvailable = totalPossibleBlocks - occupiedBlocks; 
 
         weeklyAvailability.push({
             date: dateString,
-            dayOfWeek: date.getDay(), // 1=Lunes, 6=Sábado
-            hoursAvailable: Math.max(0, hoursAvailable), // No puede ser negativo
+            dayOfWeek: date.getDay(),
+            totalHoursAvailable: availableBlocks.length, // El conteo (como antes)
+            availableBlocks: availableBlocks// <-- ¡Los horarios específicos!
         });
     }
 
