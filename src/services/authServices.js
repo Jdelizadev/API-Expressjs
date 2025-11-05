@@ -27,7 +27,7 @@ const loginUser = async (email, password) => {
         process.env.JWT_SECRET,
         {expiresIn: '4h'}
     )
-    const userName = user.userName
+    const userName = user.name
     const userID = user.id
         return { token: token, userName: userName, userID: userID }
 }
