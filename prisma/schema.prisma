@@ -9,8 +9,8 @@ datasource db {
 
 model TimeBlock {
   id           Int           @id @default(autoincrement())
-  startTime    DateTime
-  endTime      DateTime
+  startTime    String        
+  endTime      String
   appointments Appointment[]
 }
 
