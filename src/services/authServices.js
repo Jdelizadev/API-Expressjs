@@ -28,8 +28,7 @@ const loginUser = async (email, password) => {
         {expiresIn: '4h'}
     )
 
-    const userName = user.name
-        return { token: token, userName: userName }
+        return { token: token, user: user }
 }
 
 module.exports = { registerUser, loginUser}

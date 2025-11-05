@@ -17,8 +17,8 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
       const { email, password} = req.body
-      const { token, userName } = await loginUser(email, password)
-      return res.status(200).json({ token, userName })
+      const { token, user } = await loginUser(email, password)
+      return res.status(200).json({ token, user })
 
     } catch (error) {
         return res.status(400).json({ error: error.message })
