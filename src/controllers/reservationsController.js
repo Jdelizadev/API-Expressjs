@@ -2,10 +2,20 @@ const  reservationService = require("../services/reservationService")
 
 exports.createReservation = async (req, res) => {
     try {
+        console.log(req.body)
         const reservation = await reservationService.createReservation(req.body)
         res.status(201).json(reservation)
     } catch (error) {
-        res.status(400).json({ error: error.message})
+        console.error("Error en createReservation:", error.message);
+
+        if (error.message.includes('horario ya está reservado')) {
+            return res.status(409).json({ 
+                error: error.message 
+            });
+        }
+            return res.status(400).json({ 
+            error: error.message 
+        });
     }
 }
 

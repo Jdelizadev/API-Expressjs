@@ -2,17 +2,23 @@ const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
 exports.createReservation = async (data) => {
-    console.log(data)
+    
+    const dataToCreate = {
+        date: new Date(data.date), // Convierte el string de fecha ISO a objeto Date (Prisma lo necesita)
+        timeBlockId: parseInt(data.timeBlockId, 10), // Convierte a entero
+        userId: parseInt(data.userId, 10), // Convierte a entero
+    };
     const conflict = await prisma.appointment.findFirst({
         where: {
-            date: data.date,
-            timeBlockId: data.timeBlockId 
+            date: dataToCreate.date,
+            timeBlockId: dataToCreate.timeBlockId 
         }
     })
+    
     if(conflict) {
-        throw new Error('EL horario ya esta reservado')
+        throw new Error('El horario ya está reservado');
     }
-    return prisma.appointment.create({ data })
+    return prisma.appointment.create({ data: dataToCreate })
 }
 
 exports.getReservation = (id) => {
