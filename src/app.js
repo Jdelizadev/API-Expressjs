@@ -8,7 +8,7 @@ const cors = require('cors')
 
 const corsOptions = {
     // Reemplaza 'http://localhost:5173' con la URL exacta de tu frontend de React
-    origin: 'http://localhost:5173', 
+    origin: 'https://front-psi-sable.vercel.app/', 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // Esto es necesario si manejas cookies o tokens de sesión
     optionsSuccessStatus: 204
